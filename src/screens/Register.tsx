@@ -13,9 +13,15 @@ import useRegister from "hooks/useRegister";
 
 // types
 import { RegisterType } from "types/RegisterType";
+import { RootStackParamList } from "types/NavigationType";
+
+// navigation
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 
 export default function Register() {
   const [isModalActive, setIsModalActive] = useState(false);
+  const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
+
   const [formData, setFormData] = useState<RegisterType>({
     identificationNumber: "",
     firstName: "",
@@ -30,8 +36,7 @@ export default function Register() {
     });
   };
 
-  // TODO: We MUST store register data in localstorage in useRegister (if it was successfull)
-  const { data, error, isPending, isSuccess, register, isError } = useRegister(formData);
+  const { error, isPending, register, isSuccess } = useRegister(formData);
 
   function onSubmitHandler() {
     register();
@@ -39,18 +44,20 @@ export default function Register() {
 
   useEffect(
     function () {
-      if (isError) {
-        console.log("error");
-        console.log(error?.message);
-      }
-      if (isPending) {
-        console.log("Pending");
-      }
-      if (isSuccess) {
-        console.log("Success");
+      if (error?.response?.data.message) {
+        setIsModalActive(true);
       }
     },
-    [isError, isSuccess, isPending],
+    [error],
+  );
+
+  useEffect(
+    function () {
+      if (isSuccess) {
+        navigate("bottom-navigation");
+      }
+    },
+    [isSuccess, navigate],
   );
 
   return (
@@ -95,7 +102,7 @@ export default function Register() {
       {isModalActive && (
         <Modal
           actionName="باشه"
-          contentText="مشکلی وجودا داره"
+          contentText={error?.response?.data.message}
           onClose={setIsModalActive}
           title="ارور"
           visible={isModalActive}

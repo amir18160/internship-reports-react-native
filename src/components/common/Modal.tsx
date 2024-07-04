@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     fontFamily: "vazir400",
     fontSize: 20,
     color: colors.accent[950],
+    lineHeight: 35,
   },
   buttonStyles: {
     backgroundColor: colors.accent[500],

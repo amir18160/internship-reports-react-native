@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 
 // components
 import Number from "./Number";
@@ -12,9 +12,10 @@ type Props = {
   value?: string;
   unit?: string;
   icon?: ReactNode;
+  button?: ReactElement;
 };
 
-export default function RowDetail({ title, unit, value, icon }: Props) {
+export default function RowDetail({ title, unit, value, icon, button }: Props) {
   return (
     <View style={styles.rowDetailContainer}>
       <View style={styles.titleContainer}>
@@ -26,6 +27,7 @@ export default function RowDetail({ title, unit, value, icon }: Props) {
         <Number color={colors.accent[400]} size={20}>
           {value}
         </Number>
+        {button}
       </View>
     </View>
   );

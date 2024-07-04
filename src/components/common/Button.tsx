@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { Button as _Button, ActivityIndicator } from "react-native-paper";
 import React, { ReactNode } from "react";
 import colors from "constants/colors";
@@ -6,12 +6,15 @@ import colors from "constants/colors";
 type Props = {
   isPending?: boolean;
   style?: object;
+  buttonContentStyle?: object;
+  labelStyle?: object;
   icon?: string;
   mode?: "text" | "contained" | "outlined" | "elevated" | "contained-tonal" | undefined;
   rippleColor?: string;
   label?: string;
   children?: ReactNode;
   onPress?: any;
+  disbaled?: boolean;
 };
 
 export default function Button({
@@ -23,6 +26,9 @@ export default function Button({
   rippleColor,
   label,
   children,
+  buttonContentStyle,
+  labelStyle,
+  disbaled,
 }: Props) {
   return (
     <_Button
@@ -30,9 +36,10 @@ export default function Button({
       icon={icon}
       rippleColor={rippleColor ? rippleColor : colors.accent["200"]}
       mode={mode ? mode : "contained"}
-      contentStyle={styles.buttonContent}
-      labelStyle={styles.buttonText}
+      contentStyle={[styles.buttonContent, buttonContentStyle]}
+      labelStyle={[styles.buttonText, labelStyle]}
       onPress={onPress}
+      disabled={disbaled}
     >
       {isPending ? (
         <ActivityIndicator animating={true} color={colors.primary[700]} />

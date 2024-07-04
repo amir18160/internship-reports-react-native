@@ -11,4 +11,5 @@ export type RootStackParamList = {
 export type RootBottomTabParamList = {
   "home-screen": undefined;
   "history-screen": undefined;
+  "profile-screen": undefined;
 };

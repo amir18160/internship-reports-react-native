@@ -9,22 +9,19 @@ type Props = {
   title: string;
   icon: ReactNode;
   placeholder: string;
-  height: number;
+  height?: number;
 };
 
 export default function MultilineInput({ title, icon, placeholder, height }: Props) {
   return (
     <View>
       <View style={styles.mb_md}>
-        <RowDetail
-          title="توضیحات"
-          icon={<FontAwesome name="file-text" size={18} color={colors.accent[500]} />}
-        />
+        <RowDetail title={title} icon={icon} />
       </View>
       <TextInput
-        placeholderTextColor={colors.accent[300]}
-        style={styles.multilineInput}
-        placeholder="توضیحات شما..."
+        placeholderTextColor={colors.accent.placeholder}
+        style={[styles.multilineInput, height ? { height: height } : {}]}
+        placeholder={placeholder}
         multiline
       />
     </View>

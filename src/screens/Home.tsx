@@ -12,6 +12,9 @@ import ReportItem from "components/common/ReportItem";
 import Heading from "components/common/Heading";
 import Number from "components/common/Number";
 
+// animation
+import Ripple from "components/animations/Ripple";
+
 // navigation
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 

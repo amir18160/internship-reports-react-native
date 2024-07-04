@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   innerInput: {
     padding: 5,
     paddingHorizontal: 10,
-    textAlign: "right",
+    textAlign: "center",
     direction: "rtl",
     fontSize: 16,
     fontFamily: "vazir400",

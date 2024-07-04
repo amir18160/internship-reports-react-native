@@ -71,17 +71,32 @@ export default function Login() {
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const { login, isPending, isSuccess } = useLogin({
+  const { login, isPending, isSuccess, isError, error } = useLogin({
     identificationNumber: idNumber,
     password,
   });
 
   useEffect(
     function () {
-      // if (isSuccess)
-      navigation.navigate("bottom-navigation");
+      if (isSuccess) navigation.navigate("bottom-navigation");
     },
     [isSuccess, navigation],
+  );
+
+  useEffect(
+    function () {
+      if (isError) {
+        dispatch({
+          type: "SHOW_MODAL",
+          payload: {
+            title: "ناموفق",
+            contentText: error?.response?.data.message,
+            actionName: "باشه فهمیدم",
+          },
+        });
+      }
+    },
+    [isError, error],
   );
 
   function onSubmitHandler() {

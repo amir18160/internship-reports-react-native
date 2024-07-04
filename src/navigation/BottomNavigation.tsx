@@ -1,11 +1,11 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RootBottomTabParamList } from "types/NavigationType";
 
 // screens
 import Home from "screens/Home";
 import History from "screens/History";
+import Profile from "screens/Profile";
 
 // icons
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
@@ -63,13 +63,23 @@ export default function BottomNavigation() {
         name="history-screen"
         component={History}
         options={{
+          title: "تاریخچه گزارشات",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="history" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="profile-screen"
+        component={Profile}
+        options={{
+          title: "پروفایل",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="user" size={size} color={color} />
           ),
         }}
       />
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({});

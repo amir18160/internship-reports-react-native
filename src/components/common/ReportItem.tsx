@@ -1,4 +1,5 @@
-// src/components/ReportItem.tsx
+/* eslint-disable react-native/no-inline-styles */
+
 import React from "react";
 import { StyleSheet, Text, View, GestureResponderEvent } from "react-native";
 import { TouchableRipple } from "react-native-paper";
@@ -8,6 +9,7 @@ interface ReportItemProps {
   day: string;
   hours: string;
   date?: string;
+  isItDate?: boolean;
   onPress: (event: GestureResponderEvent) => void;
 }
 
@@ -16,6 +18,7 @@ export default function ReportItem({
   hours,
   date,
   onPress,
+  isItDate,
 }: ReportItemProps): React.ReactElement {
   return (
     <TouchableRipple
@@ -26,7 +29,9 @@ export default function ReportItem({
     >
       <>
         <View style={styles.dateContainer}>
-          <Text style={styles.reportDay}>{day}</Text>
+          <Text style={[styles.reportDay, isItDate && { fontFamily: "mont400" }]}>
+            {day}
+          </Text>
 
           <Text style={styles.date}>{date}</Text>
         </View>
