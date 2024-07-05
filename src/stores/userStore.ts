@@ -27,25 +27,19 @@ export const useUserStore = create<UserState & UserActions>()(
       token: null,
 
       setUser: (user) => {
-        console.log("Setting user:", user);
         set((state) => ({ ...state, user }));
-        console.log("New state after setUser:", get());
       },
 
       setToken: (token) => {
-        console.log("Setting token:", token);
         set((state) => ({ ...state, token }));
-        console.log("New state after setToken:", get());
       },
 
       setUserAndToken: (userAndToken) => {
-        console.log("Setting user and token:", userAndToken);
         set((state) => ({
           ...state,
           user: userAndToken.user,
           token: userAndToken.token,
         }));
-        console.log("New state after setUserAndToken:", get());
       },
     }),
     { name: "userInfo", storage: createJSONStorage(() => AsyncStorage) },

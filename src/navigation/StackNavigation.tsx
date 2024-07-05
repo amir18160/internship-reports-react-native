@@ -19,13 +19,25 @@ import { RootStackParamList } from "types/NavigationType";
 
 // main layout
 import BottomNavigation from "./BottomNavigation";
+import { useUserStore } from "stores/userStore";
 
 // native stack
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation(): React.ReactElement {
+  const user = useUserStore((state) => state.user);
+
+  let starterScreen: keyof RootStackParamList = "welcome-screen";
+
+  if (user?.id && user.isAdmin) {
+    // admin navigation
+  } else if (user?.id) {
+    starterScreen = "bottom-navigation";
+  }
+
   return (
     <Stack.Navigator
+      initialRouteName={starterScreen}
       screenOptions={{
         headerShown: false,
         navigationBarColor: colors.primary[950],

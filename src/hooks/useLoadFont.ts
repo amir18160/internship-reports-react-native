@@ -1,6 +1,4 @@
 import { useFonts } from "expo-font";
-import { useEffect } from "react";
-import * as SplashScreen from "expo-splash-screen";
 
 function useLoadFont() {
   const [loaded, error] = useFonts({
@@ -16,12 +14,6 @@ function useLoadFont() {
     mont400: require("../assets/fonts/montserrat/mont400.ttf"),
     mont500: require("../assets/fonts/montserrat/mont500.ttf"),
   });
-
-  useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded, error]);
 
   return [loaded, error];
 }
