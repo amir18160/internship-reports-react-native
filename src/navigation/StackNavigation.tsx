@@ -30,7 +30,7 @@ export default function StackNavigation(): React.ReactElement {
   let starterScreen: keyof RootStackParamList = "welcome-screen";
 
   if (user?.id && user.isAdmin) {
-    // admin navigation
+    starterScreen = "bottom-navigation";
   } else if (user?.id) {
     starterScreen = "bottom-navigation";
   }

@@ -13,12 +13,14 @@ import { StatusBar } from "expo-status-bar";
 // custom hooks
 import { useLoadFont } from "hooks/useLoadFont";
 import { useInitializeStore } from "hooks/useInitializeUserStore";
+import { useAxiosInterceptors } from "hooks/useAxiosInterceptor";
 
 // ui library: react native paper
 import { PaperProvider } from "react-native-paper";
 
 // providers
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { DatabaseProvider } from "context/DatabaseProvider";
 
 // prevent screen to be shown until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -27,9 +29,16 @@ SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
 export default function App() {
+  // load fonts
   const [loaded, error] = useLoadFont();
+
+  // initialize store
   const { isLoading: isLoadingUserFromStorage } = useInitializeStore();
 
+  // initialize axios interceptors
+  useAxiosInterceptors();
+
+  // prevent screen to be shown until fonts are loaded
   useEffect(
     function () {
       if (!isLoadingUserFromStorage && (loaded || error)) SplashScreen.hideAsync();
@@ -37,6 +46,7 @@ export default function App() {
     [loaded, error, isLoadingUserFromStorage],
   );
 
+  // render
   if (!loaded && !error) {
     return null;
   }
@@ -44,12 +54,14 @@ export default function App() {
   return (
     <PaperProvider>
       <QueryClientProvider client={queryClient}>
-        <StatusBar style="light" animated />
-        <NavigationContainer>
-          <SafeAreaView style={styles.container}>
-            <StackNavigation />
-          </SafeAreaView>
-        </NavigationContainer>
+        <DatabaseProvider>
+          <StatusBar style="light" animated />
+          <NavigationContainer>
+            <SafeAreaView style={styles.container}>
+              <StackNavigation />
+            </SafeAreaView>
+          </NavigationContainer>
+        </DatabaseProvider>
       </QueryClientProvider>
     </PaperProvider>
   );

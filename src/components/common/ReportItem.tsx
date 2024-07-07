@@ -47,6 +47,7 @@ export default function ReportItem({
 const styles = StyleSheet.create({
   reportContainer: {
     padding: 15,
+    paddingHorizontal: 10,
     borderRadius: 16,
     width: "48.5%",
     display: "flex",
@@ -84,8 +85,8 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: "mont300",
     position: "absolute",
-    right: 0,
-    top: 36,
+    right: 5,
+    top: 34,
   },
   dateContainer: {
     position: "relative",

@@ -9,8 +9,8 @@ type Props = {
   title: string;
   startDate: string;
   endDate: string;
-  sum: number;
-  onPress: (event: GestureResponderEvent) => void;
+  sum: string;
+  onPress: any;
 };
 
 export default function AccordionButton({
@@ -29,11 +29,9 @@ export default function AccordionButton({
     >
       <View style={styles.colContainer}>
         <View style={styles.col}>
-          <Text style={[styles.colItem, styles.title, styles.borderButtom]}>
-            این هفته
-          </Text>
+          <Text style={[styles.colItem, styles.title, styles.borderButtom]}>{title}</Text>
           <View style={[styles.colItem, styles.sumContainer]}>
-            <Text style={styles.sumNum}>5</Text>
+            <Text style={styles.sumNum}>{sum}</Text>
             <Text style={styles.sumText}>مجموع ساعات</Text>
             <AntDesign name="clockcircle" color={colors.primary[800]} size={18} />
           </View>
@@ -41,12 +39,12 @@ export default function AccordionButton({
 
         <View style={styles.col}>
           <View style={[styles.colItem, styles.borderButtom, styles.dateContainer]}>
-            <Text style={[styles.fontMont, styles.date]}>1403/08/05</Text>
+            <Text style={[styles.fontMont, styles.date]}>{startDate}</Text>
             <Text style={styles.dateLabel}>تاریخ شروع/</Text>
           </View>
 
           <View style={[styles.colItem, styles.borderButtom, styles.dateContainer]}>
-            <Text style={[styles.fontMont, styles.date]}>1403/08/05</Text>
+            <Text style={[styles.fontMont, styles.date]}>{endDate}</Text>
             <Text style={styles.dateLabel}>تاریخ پایان/</Text>
           </View>
         </View>

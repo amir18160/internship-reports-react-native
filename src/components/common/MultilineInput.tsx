@@ -10,15 +10,26 @@ type Props = {
   icon: ReactNode;
   placeholder: string;
   height?: number;
+  value: string;
+  onChangeText: (inputText: string) => any;
 };
 
-export default function MultilineInput({ title, icon, placeholder, height }: Props) {
+export default function MultilineInput({
+  title,
+  icon,
+  placeholder,
+  height,
+  onChangeText,
+  value,
+}: Props) {
   return (
     <View>
       <View style={styles.mb_md}>
         <RowDetail title={title} icon={icon} />
       </View>
       <TextInput
+        value={value}
+        onChangeText={onChangeText}
         placeholderTextColor={colors.accent.placeholder}
         style={[styles.multilineInput, height ? { height: height } : {}]}
         placeholder={placeholder}

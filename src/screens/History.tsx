@@ -1,48 +1,73 @@
-import React from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+// lib
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, ScrollView, Text, FlatList } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 
+// hooks
+import { useAccordionsData } from "hooks/useAccordionData";
+
+// const
 import colors from "constants/colors";
 
+// components
 import AccordionButton from "components/common/AccordionButton";
 import Accordion from "components/common/Accordion";
 import ReportItem from "components/common/ReportItem";
 
-export default function Home() {
-  const open = useSharedValue(false);
+// utils
+import { convertIsoToPersianDate } from "utils/dateTime";
 
-  const onPress = () => {
-    open.value = !open.value;
+export default function Home() {
+  // animation
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState(-1);
+  const open = useSharedValue(true);
+  const close = useSharedValue(false);
+
+  const onPress = (activeIndex: number) => {
+    if (activeIndex === activeAccordionIndex) {
+      setActiveAccordionIndex(-1);
+      return;
+    }
+    setActiveAccordionIndex(activeIndex);
   };
+
+  const { isPending, isError, isSuccess, accordionsInfo } = useAccordionsData();
+
+  if (isPending) return <Text>Loading...</Text>;
+  if (isError) return <Text>Error fetching data</Text>;
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.root}>
-        <View>
-          <AccordionButton onPress={onPress} />
-        </View>
-
-        <View>
-          <AccordionButton onPress={onPress} />
-        </View>
-
-        <View>
-          <AccordionButton onPress={onPress} />
-        </View>
-
-        <Accordion isExpanded={open} viewKey="accordion">
-          {Array(20)
-            .fill(1)
-            .map(() => (
-              <ReportItem
-                isItDate
-                key={Math.random()}
-                day="1401/03/05"
-                hours="4"
-                onPress={() => {}}
+        {accordionsInfo.map((accordionData, index) => (
+          <View key={accordionData.startDate + accordionData.title}>
+            <View>
+              <AccordionButton
+                title={accordionData.title}
+                sum={accordionData.sum}
+                startDate={convertIsoToPersianDate(accordionData.startDate).dateString}
+                endDate={convertIsoToPersianDate(accordionData.endDate).dateString}
+                onPress={() => onPress(index)}
               />
-            ))}
-        </Accordion>
+
+              <Accordion
+                isExpanded={activeAccordionIndex === index ? open : close}
+                viewKey={`accordion_history_${index}`}
+              >
+                {accordionData.data.map((item: any) => (
+                  <ReportItem
+                    day={convertIsoToPersianDate(item.date).dateString}
+                    date={convertIsoToPersianDate(item.date).dayOfWeek}
+                    hours={item.duration.split(":")[0]}
+                    isItDate={true}
+                    key={Math.random()}
+                    onPress={() => {}}
+                  />
+                ))}
+              </Accordion>
+            </View>
+          </View>
+        ))}
       </View>
     </ScrollView>
   );

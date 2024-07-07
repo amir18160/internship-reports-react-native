@@ -1,5 +1,5 @@
 // lib
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 // components
@@ -7,28 +7,103 @@ import RowDetail from "components/common/RowDetail";
 import MultilineInput from "components/common/MultilineInput";
 import TimePicker from "components/common/TimePicker";
 import Button from "components/common/Button";
+import Modal from "components/common/Modal";
 
 // const
 import colors from "constants/colors";
 
+// hooks
+import { useReport } from "hooks/useReport";
+
 // icons
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
-export default function AddReport() {
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [selectedHour, setSelectedHour] = useState<string>("");
+// types
+import { RootBottomTabParamList } from "types/NavigationType";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
-  function handleOpenModal() {
-    setModalVisible(true);
+type Props = BottomTabScreenProps<RootBottomTabParamList, "home-screen">;
+type ModalState = {
+  visible: boolean;
+  type: "timePicker" | "status" | "";
+  frontError?: boolean;
+};
+
+export default function AddReport({ navigation }: Props) {
+  // hooks
+
+  const [modalVisible, setModalVisible] = useState<ModalState>({
+    visible: false,
+    type: "",
+    frontError: false,
+  });
+  const [modalMessage, setModalMessage] = useState<string>("");
+  const [reportDetails, setReportDetails] = useState({
+    description: "",
+    link: "",
+    duration: "",
+  });
+
+  const { data, isError, error, isPending, isSuccess, performMutation } =
+    useReport("ADD_REPORT");
+
+  // handers
+
+  function onSetDuration(duration: string) {
+    setReportDetails((state) => ({ ...state, duration }));
+  }
+  function onSetLink(link: string) {
+    setReportDetails((state) => ({ ...state, link }));
+  }
+  function onSetdescription(description: string) {
+    setReportDetails((state) => ({ ...state, description }));
+  }
+
+  function handleDatePickerModal() {
+    setModalVisible({ visible: true, type: "timePicker" });
   }
 
   function handleCloseModal() {
-    setModalVisible(false);
+    setModalVisible({ visible: false, type: "" });
+    setModalMessage("");
+
+    if (isSuccess) {
+      navigation.goBack();
+    }
   }
 
-  function handleConfirm(hour: string) {
-    setSelectedHour(hour);
+  function handleConfirm() {
+    if (!reportDetails.description) {
+      setModalMessage("توضیحات نمیتواند خالی باشد");
+      setModalVisible({ type: "status", visible: true, frontError: true });
+      return;
+    }
+    if (!reportDetails.duration) {
+      setModalMessage("لطفا مدت زمان را انتخاب کنید.");
+      setModalVisible({ type: "status", visible: true, frontError: true });
+      return;
+    }
+
+    console.info(reportDetails);
+
+    performMutation({ ...reportDetails });
   }
+
+  useEffect(
+    function () {
+      if (error?.response?.data.message) {
+        setModalMessage(error.response.data.message);
+        setModalVisible({ type: "status", visible: true });
+      } else if (error?.isAxiosError) {
+        setModalMessage("مشکل در اتصال!");
+        setModalVisible({ type: "status", visible: true });
+      } else if (isSuccess) {
+        setModalMessage("ثبت موفق آمیز!");
+        setModalVisible({ type: "status", visible: true, frontError: false });
+      }
+    },
+    [isSuccess, isError, error],
+  );
 
   return (
     <ScrollView>
@@ -43,11 +118,15 @@ export default function AddReport() {
         </View>
         <View style={styles.inputsContainer}>
           <MultilineInput
+            onChangeText={onSetdescription}
+            value={reportDetails.description}
             title="توضیحات"
             placeholder="توضیحات شما در رابطه با فعالیت."
             icon={<FontAwesome name="file-text" size={18} color={colors.accent[500]} />}
           />
           <MultilineInput
+            onChangeText={onSetLink}
+            value={reportDetails.link}
             title="لینک"
             placeholder="در صورتی که روی یک تمرین یا پروژه کار کرده اید میتواند لینک آن را اینجا وارد کنید. پر کردن این فیلد ضروری نیست."
             icon={<FontAwesome name="link" size={18} color={colors.accent[500]} />}
@@ -59,13 +138,13 @@ export default function AddReport() {
           <RowDetail
             title="انتخاب"
             icon={<AntDesign name="clockcircle" size={18} color={colors.accent[500]} />}
-            value={selectedHour}
+            value={reportDetails.duration}
             button={
               <Button
                 buttonContentStyle={styles.contentStyle}
                 labelStyle={styles.contentStyle}
                 style={styles.hourButton}
-                onPress={handleOpenModal}
+                onPress={handleDatePickerModal}
               >
                 انتخاب ساعات
               </Button>
@@ -74,11 +153,26 @@ export default function AddReport() {
         </View>
 
         <TimePicker
-          visible={modalVisible}
+          visible={modalVisible.visible && modalVisible.type === "timePicker"}
           onDismiss={handleCloseModal}
-          onConfirm={handleConfirm}
+          onConfirm={onSetDuration}
         />
+
+        <Button
+          style={styles.confirmButton}
+          onPress={handleConfirm}
+          isPending={isPending}
+        >
+          تایید
+        </Button>
       </View>
+      <Modal
+        visible={modalVisible.visible && modalVisible.type === "status"}
+        onClose={handleCloseModal}
+        title={isError || modalVisible.frontError ? "ناموفق" : "موفق"}
+        actionName="باشه"
+        contentText={modalMessage}
+      />
     </ScrollView>
   );
 }
@@ -122,5 +216,9 @@ const styles = StyleSheet.create({
     height: 35,
     paddingTop: 5,
     color: colors.accent[950],
+  },
+  confirmButton: {
+    marginTop: 25,
+    marginRight: 25,
   },
 });
