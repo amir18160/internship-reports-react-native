@@ -1,15 +1,15 @@
 export type RootStackParamList = {
-  "welcome-screen": undefined;
-  "login-screen": undefined;
-  "register-screen": undefined;
-  "bottom-navigation": undefined;
-  "support-screen": undefined;
-  "report-detail-screen": undefined;
-  "add-report-screen": undefined;
+  "welcome-screen": any;
+  "login-screen": any;
+  "register-screen": any;
+  "bottom-navigation": any;
+  "support-screen": any;
+  "report-detail-screen": any;
+  "add-report-screen": any;
 };
 
 export type RootBottomTabParamList = {
-  "home-screen": undefined;
-  "history-screen": undefined;
-  "profile-screen": undefined;
+  "home-screen": any;
+  "history-screen": any;
+  "profile-screen": any;
 };

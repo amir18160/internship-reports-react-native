@@ -1,5 +1,5 @@
 // lib
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { TouchableRipple } from "react-native-paper";
 
@@ -12,20 +12,32 @@ import ReportItem from "components/common/ReportItem";
 import Heading from "components/common/Heading";
 import Number from "components/common/Number";
 
-// animation
-import Ripple from "components/animations/Ripple";
-
 // navigation
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 
 // props
 import { RootStackParamList } from "types/NavigationType";
 
+// hooks
+import { useReportSQlite } from "hooks/useReportSQlite";
+import { convertIsoToPersianDate, getCurrentWeekRange } from "utils/dateTime";
+
 export default function Home() {
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
 
+  const currentWeekRange = getCurrentWeekRange();
+  const { isError, isPending, isSuccess, getReportsFromSqlite, data } = useReportSQlite({
+    dateGreaterThen: currentWeekRange[0],
+    dateLessThen: currentWeekRange[1],
+  });
+
+  useEffect(() => {
+    getReportsFromSqlite();
+    console.log("useEffect getReportsFromSqlite");
+  }, []);
+
   function onGoToReportHandler() {
-    navigate("report-detail-screen");
+    navigate("report-detail-screen", { id: 10 });
   }
 
   return (
@@ -35,17 +47,21 @@ export default function Home() {
           <Heading>گزارشات این هفته</Heading>
           <View>
             <View style={styles.reportsGrid}>
-              {Array(5)
-                .fill(1)
-                .map(() => (
+              {data ? (
+                data.data.map((_data: any, index) => (
                   <ReportItem
-                    key={Math.random()}
-                    day="سه شنبه"
-                    hours="16"
-                    date="1394/13/41"
-                    onPress={onGoToReportHandler}
+                    key={_data + Math.random() + index}
+                    day={convertIsoToPersianDate(_data.date).dayOfWeek}
+                    hours={_data.duration}
+                    date={convertIsoToPersianDate(_data.date).dateString}
+                    onPress={() => onGoToReportHandler()}
                   />
-                ))}
+                ))
+              ) : (
+                <View>
+                  <Text>nada</Text>
+                </View>
+              )}
 
               <View style={styles.addNewContainer}>
                 <TouchableRipple

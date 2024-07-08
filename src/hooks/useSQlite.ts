@@ -5,9 +5,11 @@ import {
   insertReport,
   clearReportTable,
 } from "database/reportsDB";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function useSQlite() {
+  const [isDatabaseLoading, setIsDatabaseLoading] = useState(true);
+
   const { data, isError, error, isPending, isSuccess, performMutation } =
     useReport("QUERY_REPORT");
 
@@ -42,10 +44,19 @@ export function useSQlite() {
         }
       });
 
+      setIsDatabaseLoading(false);
       console.info("db inistialization: report table was inserted| status: ok");
     },
     [data, isSuccess],
   );
 
-  return { data, isError, error, isPending, isSuccess, DBInitialization };
+  return {
+    data,
+    isError,
+    error,
+    isPending,
+    isSuccess,
+    DBInitialization,
+    isDatabaseLoading,
+  };
 }

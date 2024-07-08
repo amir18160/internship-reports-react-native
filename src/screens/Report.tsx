@@ -1,6 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { TouchableRipple } from "react-native-paper";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 // component
 import Heading from "components/common/Heading";
@@ -14,10 +15,11 @@ import { FontAwesome, AntDesign } from "@expo/vector-icons";
 
 // utils
 import openLinkInBrowser from "utils/openLinkInBrowser";
+import { RootBottomTabParamList } from "types/NavigationType";
 
-/* <FontAwesome name="file-text" size={24} color={colors.accent[500]} /> */
+type Props = BottomTabScreenProps<RootBottomTabParamList, "home-screen">;
 
-export default function Report() {
+export default function Report({ route }: Props) {
   return (
     <ScrollView>
       <View style={styles.root}>

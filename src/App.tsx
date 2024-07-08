@@ -1,3 +1,7 @@
+// motio animations
+import "react-native-reanimated";
+import "react-native-gesture-handler";
+
 // react
 import React, { useEffect } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";

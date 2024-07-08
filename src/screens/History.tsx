@@ -1,10 +1,10 @@
 // lib
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView, Text, FlatList } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, ScrollView, Text } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 
 // hooks
-import { useAccordionsData } from "hooks/useAccordionData";
+import { useAccordionsData } from "hooks/useAccordion";
 
 // const
 import colors from "constants/colors";
