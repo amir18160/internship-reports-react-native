@@ -26,3 +26,17 @@ export function sumTimeStrings(times: string[]): string {
 
   return convertDecimalToTime(adjustedHours + adjustedMinutes / 60);
 }
+
+export function calculateDistanceFrom20(time: string): {
+  distance: string;
+  below20: boolean;
+} {
+  const targetTime = parseTimeToDecimal(time);
+  const twenty = 20;
+  const distance = targetTime < twenty ? twenty - targetTime : targetTime - twenty;
+  const below20 = targetTime < twenty;
+
+  const distanceTime = convertDecimalToTime(distance);
+
+  return { distance: distanceTime, below20 };
+}

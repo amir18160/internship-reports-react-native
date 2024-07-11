@@ -22,7 +22,7 @@ const Accordion = ({
   children,
   viewKey,
   style,
-  duration = 500,
+  duration = 300,
 }: AccordionItemProps) => {
   const height = useSharedValue(0);
 
@@ -34,6 +34,7 @@ const Accordion = ({
 
   const bodyStyle = useAnimatedStyle(() => ({
     height: derivedHeight.value,
+    opacity: derivedHeight.value,
   }));
 
   return (

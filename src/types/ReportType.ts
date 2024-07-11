@@ -15,10 +15,18 @@ export interface ReportType {
 }
 
 export interface CreateReportType {
+  id: number | undefined;
   description: string;
   date: string;
   link: null | string;
   duration: string;
+}
+
+export interface UpdateReportType {
+  id: number;
+  description?: string;
+  link?: null | string;
+  duration?: string;
 }
 
 export interface ReportQueryType {

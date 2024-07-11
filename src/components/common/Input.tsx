@@ -26,12 +26,6 @@ export default function Input({
   onSetValue,
   value,
 }: Props) {
-  // const [value, setValue] = useState<string>("");
-
-  // const hasErrors = () => {
-  //   return !value.includes("@");
-  // };
-
   return (
     <View style={containerStyles}>
       <View style={styles.inputLabelContainer}>

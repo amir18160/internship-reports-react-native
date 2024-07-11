@@ -19,33 +19,53 @@ import { useReport } from "hooks/useReport";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
 // types
-import { RootBottomTabParamList } from "types/NavigationType";
+import { RootBottomTabParamList, RootStackParamList } from "types/NavigationType";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { convertIsoToPersianDate } from "utils/dateTime";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-type Props = BottomTabScreenProps<RootBottomTabParamList, "home-screen">;
+type Props = NativeStackScreenProps<RootStackParamList, "add-report-screen">;
+
+// type Props = BottomTabScreenProps<RootBottomTabParamList, "home-screen"> &
+//   NativeStackScreenProps<RootStackParamList, "add-report-screen">;
+
+type DetailType = {
+  id: number | undefined;
+  description: string;
+  link: string;
+  duration: string;
+};
+
 type ModalState = {
   visible: boolean;
   type: "timePicker" | "status" | "";
   frontError?: boolean;
 };
 
-export default function AddReport({ navigation }: Props) {
-  // hooks
+export default function AddReport({ navigation, route }: Props) {
+  const { todaysReport } = route.params;
 
+  const [isTodaysReportExist, setIsTodaysReportExist] = useState(false);
   const [modalVisible, setModalVisible] = useState<ModalState>({
     visible: false,
     type: "",
     frontError: false,
   });
   const [modalMessage, setModalMessage] = useState<string>("");
-  const [reportDetails, setReportDetails] = useState({
+  const [reportDetails, setReportDetails] = useState<DetailType>({
+    id: undefined,
     description: "",
     link: "",
     duration: "",
   });
 
-  const { data, isError, error, isPending, isSuccess, performMutation } =
-    useReport("ADD_REPORT");
+  const { data, isError, error, isPending, isSuccess, performMutation } = useReport(
+    todaysReport ? "UPDATE_REPORT" : "ADD_REPORT",
+  );
+
+  // constant
+  const currentTime = convertIsoToPersianDate(new Date().toISOString());
 
   // handers
 
@@ -89,6 +109,7 @@ export default function AddReport({ navigation }: Props) {
     performMutation({ ...reportDetails });
   }
 
+  // effects
   useEffect(
     function () {
       if (error?.response?.data.message) {
@@ -105,15 +126,29 @@ export default function AddReport({ navigation }: Props) {
     [isSuccess, isError, error],
   );
 
+  useEffect(
+    function () {
+      if (!todaysReport || !todaysReport.id) return;
+      setIsTodaysReportExist(true);
+      setReportDetails({
+        id: todaysReport.id,
+        description: todaysReport.description,
+        link: todaysReport.link || "",
+        duration: todaysReport.duration,
+      });
+    },
+    [todaysReport],
+  );
+
   return (
     <ScrollView>
       <View style={styles.root}>
         <View style={styles.titleContainer}>
           <RowDetail
-            title="گزارش جدید"
+            title={isTodaysReportExist ? "ویرایش گزارش" : "گزارش جدید"}
             icon={<AntDesign name="pluscircle" size={18} color={colors.accent[500]} />}
-            value="1402/03/43"
-            unit="شنبه"
+            value={currentTime.dateString}
+            unit={currentTime.dayOfWeek}
           />
         </View>
         <View style={styles.inputsContainer}>

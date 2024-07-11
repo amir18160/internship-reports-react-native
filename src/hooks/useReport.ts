@@ -1,4 +1,4 @@
-import { useMutation, MutationFunction } from "@tanstack/react-query";
+import { useMutation, MutationFunction, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import {
   addNewReport,
@@ -22,7 +22,8 @@ type MutationFnType = MutationFunction<
   CreateReportType | ReportQueryType
 >;
 
-export function useReport(action: ActionType) {
+export function useReport(action: ActionType, refetchTime: number = 0) {
+  const queryClient = useQueryClient();
   let mutationFn: MutationFnType;
 
   switch (action) {
@@ -52,11 +53,20 @@ export function useReport(action: ActionType) {
     CreateReportType | ReportQueryType
   >({
     mutationFn,
+    mutationKey: ["reports"],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
+    },
   });
 
   function performMutation(_data: CreateReportType | ReportQueryType) {
     mutate(_data);
   }
 
-  return { performMutation, data, isError, isSuccess, isPending, error };
+  // Refetch function
+  function refetchReports() {
+    queryClient.invalidateQueries({ queryKey: ["reports"] });
+  }
+
+  return { performMutation, refetchReports, data, isError, isSuccess, isPending, error };
 }

@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   buttonContent: {
     flexDirection: "row-reverse",
     height: 55,
-    minWidth: 150,
+    minWidth: 100,
     backgroundColor: colors.accent[600],
   },
   buttonText: {

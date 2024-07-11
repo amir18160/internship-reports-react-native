@@ -10,6 +10,7 @@ import Welcome from "screens/Welcome";
 import Support from "screens/Support";
 import Report from "screens/Report";
 import AddReport from "screens/AddReport";
+import EditProfile from "screens/EditProfile";
 
 // icon
 import { AntDesign } from "@expo/vector-icons";
@@ -79,6 +80,16 @@ export default function StackNavigation(): React.ReactElement {
         name="report-detail-screen"
         component={Report}
         options={{ animation: "ios", headerShown: true, title: "گزارش" }}
+      />
+
+      <Stack.Screen
+        name="edit-profile-screen"
+        component={EditProfile}
+        options={{
+          animation: "slide_from_bottom",
+          headerShown: true,
+          title: "ویرایش پروفایل",
+        }}
       />
 
       <Stack.Screen

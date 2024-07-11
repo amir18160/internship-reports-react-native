@@ -1,11 +1,17 @@
 import axios, { AxiosResponse } from "axios";
 
 // routes
-import { createReportUrl, queryRerportUrl, deleteReportUrl } from "./apiRoutes";
+import {
+  createReportUrl,
+  queryRerportUrl,
+  deleteReportUrl,
+  updateReportUrl,
+} from "./apiRoutes";
 
 // types
 import {
   CreateReportType,
+  UpdateReportType,
   ReportQueryResponseType,
   ReportQueryType,
   ReportResponseType,
@@ -39,10 +45,9 @@ export const addNewReport = async ({
 };
 
 export const updateReport = async (
-  data: CreateReportType,
+  data: UpdateReportType,
 ): Promise<ReportResponseType> => {
-  // FIXME: url is not valid!!!!!!!!!!!!1111
-  const res: AxiosResponse = await axios.post<ReportResponseType>(createReportUrl, data);
+  const res: AxiosResponse = await axios.patch<ReportResponseType>(updateReportUrl, data);
   return res.data;
 };
 

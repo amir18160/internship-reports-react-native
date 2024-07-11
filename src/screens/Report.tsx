@@ -15,11 +15,20 @@ import { FontAwesome, AntDesign } from "@expo/vector-icons";
 
 // utils
 import openLinkInBrowser from "utils/openLinkInBrowser";
-import { RootBottomTabParamList } from "types/NavigationType";
+import { convertIsoToPersianDate } from "utils/dateTime";
+import { sumTimeStrings } from "utils/calculateSum";
 
-type Props = BottomTabScreenProps<RootBottomTabParamList, "home-screen">;
+// types
+import { RootStackParamList } from "types/NavigationType";
+
+type Props = BottomTabScreenProps<RootStackParamList, "report-detail-screen">;
 
 export default function Report({ route }: Props) {
+  const { report } = route.params;
+  const reportDateAndTime = convertIsoToPersianDate(report.date);
+  const duration = sumTimeStrings([report.duration]);
+
+  report.duration.split(":");
   return (
     <ScrollView>
       <View style={styles.root}>
@@ -30,15 +39,15 @@ export default function Report({ route }: Props) {
         <View style={styles.mb}>
           <RowDetail
             title="تاریخ گزارش"
-            unit="شنبه"
-            value="1402/03/11"
+            unit={reportDateAndTime.dayOfWeek}
+            value={reportDateAndTime.dateString}
             icon={<FontAwesome name="calendar" size={18} color={colors.accent[500]} />}
           />
         </View>
         <RowDetail
           title="ساعات بازدهی"
           unit="H"
-          value="12"
+          value={duration}
           icon={<AntDesign name="clockcircle" size={18} color={colors.accent[500]} />}
         />
 
@@ -47,12 +56,7 @@ export default function Report({ route }: Props) {
             <FontAwesome name="text-height" size={18} color={colors.accent[500]} />
             <Text style={styles.descriptionTitle}>توضیحات:</Text>
           </View>
-          <Text style={styles.descriptionContent}>
-            مک‌دانل ایکس‌اف-۸۵ گابلین (به انگلیسی: McDonnell XF-85 Goblin) یک هواپیمای
-            جنگنده پیش‌نمونه بود که شرکت مک‌دانل در خلال جنگ جهانی دوم طراحی و تولید
-            آزمایشی کرد. این هواپیما برای رهاسازی از دریچه بمب هواپیماهای بمب‌افکن کانویر
-            بی-۳۶ به عنوان یک هواپیمای انگل[الف] طراحی شده بود.
-          </Text>
+          <Text style={styles.descriptionContent}>{report.description}</Text>
         </View>
 
         <View style={styles.descriptionContainer}>
@@ -65,10 +69,10 @@ export default function Report({ route }: Props) {
               borderless
               style={styles.linkContainer}
               rippleColor={colors.accent[200]}
-              onPress={() => openLinkInBrowser("https://www.google.com")}
+              onPress={() => openLinkInBrowser(report.link)}
             >
               <Text style={styles.link}>
-                https://stackoverflow.com/questions/43804032/open-url-in-default-web-browser
+                {report.link ? report.link : "لینک پیوست نشده"}
               </Text>
             </TouchableRipple>
           </View>

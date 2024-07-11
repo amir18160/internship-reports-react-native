@@ -1,15 +1,25 @@
 import { useState, useEffect } from "react";
-import { queryReportsDB } from "database/reportsDB";
 import { sumTimeStrings } from "utils/calculateSum";
 
 import { getCurrentWeekRange, getPreviusWeekRange, last30Days } from "utils/dateTime";
+import { useReport } from "./useReport";
+import { ReportType } from "types/ReportType";
+
+type AccordionsInfoType = {
+  title: string;
+  sum: string;
+  startDate: string;
+  endDate: string;
+  data: ReportType[];
+};
 
 export const useAccordionsData = () => {
   const currentWeekRange = getCurrentWeekRange();
   const previusWeekRange = getPreviusWeekRange();
   const last30DaysRange = last30Days();
 
-  const [accordionsInfo, setAccordionsInfo] = useState([
+  const [isPending, setIsPending] = useState(true);
+  const [accordionsInfo, setAccordionsInfo] = useState<AccordionsInfoType[]>([
     {
       title: "هفته کنونی",
       sum: "0",
@@ -33,44 +43,58 @@ export const useAccordionsData = () => {
     },
   ]);
 
-  const [isPending, setIsPending] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const {
+    data,
+    error,
+    isError,
+    isPending: isQueryPending,
+    isSuccess,
+    performMutation,
+  } = useReport("QUERY_REPORT");
+
+  useEffect(function () {
+    performMutation({});
+  }, []);
+
+  useEffect(
+    function () {
+      console.info("---------------------------------------");
+
+      console.log(data);
+      if (!data || !data.reports) return;
+
+      data.reports.map((report: ReportType) => {
+        for (let index = 0; index < accordionsInfo.length; index++) {
+          if (
+            report.date < accordionsInfo[index].endDate &&
+            report.date > accordionsInfo[index].startDate
+          ) {
+            accordionsInfo[index].data.push(report);
+          }
+        }
+      });
+    },
+    [data, accordionsInfo],
+  );
 
   useEffect(() => {
-    const processAccordionsInfo = async (_accordionsInfo: any[]) => {
-      setIsPending(true);
-      setIsError(false);
-      setIsSuccess(false);
+    if (!data) return;
 
-      try {
-        const AccordionsPromiseArray = _accordionsInfo.map(async (accordionData) => {
-          const datas = await queryReportsDB({
-            dateLessThen: accordionData.endDate,
-            dateGreaterThen: accordionData.startDate,
-          });
-
-          accordionData.data = datas.data;
-
-          const timeStringsArr = datas.data.map((data: any) => {
-            return data.duration;
-          });
-
-          accordionData.sum = sumTimeStrings(timeStringsArr);
+    const processAccordionsInfo = (_accordionsInfo: any[]) => {
+      _accordionsInfo.map((accordionData) => {
+        const timeStringsArr = accordionData.data.map((_data: any) => {
+          return _data.duration;
         });
 
-        await Promise.all(AccordionsPromiseArray);
-        setAccordionsInfo(accordionsInfo);
-        setIsSuccess(true);
-      } catch (error) {
-        setIsError(true);
-      } finally {
-        setIsPending(false);
-      }
+        accordionData.sum = sumTimeStrings(timeStringsArr);
+      });
+
+      setAccordionsInfo(accordionsInfo);
     };
 
     processAccordionsInfo([...accordionsInfo]);
-  }, [accordionsInfo]);
+    setIsPending(false);
+  }, [accordionsInfo, data]);
 
   return {
     isPending,

@@ -52,7 +52,7 @@ function TimePicker(props: TimePickerProps) {
       >
         <Text style={styles.modalTitle}>Select Hour</Text>
         <View style={styles.input}>
-          <Input label="تعداد ساعات" value={hour} onSetValue={setHour} />
+          <Input label="تعداد ساعات" value={hour} onSetValue={setHour} decimal={true} />
         </View>
 
         <View style={styles.helperContainer}>

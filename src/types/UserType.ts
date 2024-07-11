@@ -6,4 +6,7 @@ export interface User {
   isAdmin: boolean;
   isUserDeleted: boolean;
   isUserConfirmed: boolean;
+  internStatus: "OFFICIAL" | "LEARNING";
+  workingField: "MOBILE" | "WEB" | "SERVER" | "UNKNOWN" | "OTHER";
+  internshipMentor: string;
 }

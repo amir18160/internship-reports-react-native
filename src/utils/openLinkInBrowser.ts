@@ -1,6 +1,8 @@
 import { Linking } from "react-native";
 
-const openLinkInBrowser = async (url: string): Promise<void> => {
+const openLinkInBrowser = async (url: string | null): Promise<void> => {
+  if (url === null) return;
+
   try {
     const supported = await Linking.canOpenURL(url);
 
